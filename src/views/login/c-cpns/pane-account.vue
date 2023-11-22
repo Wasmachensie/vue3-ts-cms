@@ -25,11 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import { accountLogin } from '@/service/login/login.ts'
+import useLoginStore from '@/store/login/login.ts'
 import { message } from '@/utils/resetMessage'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import useLoginStore from '@/store/login/login.ts'
 // 1.定义account数据
 const accountForm = reactive({
   account: '',

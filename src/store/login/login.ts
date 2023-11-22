@@ -1,6 +1,6 @@
 import { accountLogin } from '@/service/login/login'
 import { defineStore } from 'pinia'
-
+import type { IAccount } from '@/types'
 const useLoginStore = defineStore('login', {
   state: () => ({
     id: '',
@@ -8,7 +8,7 @@ const useLoginStore = defineStore('login', {
     token: ''
   }),
   actions: {
-    async loginAccountAction(account: { name: string; password: string }) {
+    async loginAccountAction(account: IAccount) {
       const loginResult = await accountLogin(account)
       console.log('res==>', loginResult)
       this.id = loginResult.data.id

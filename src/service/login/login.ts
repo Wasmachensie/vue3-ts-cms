@@ -1,6 +1,6 @@
 import hyRequest from '..'
-
-export function accountLogin(account: { name: string; password: string }) {
+import type { IAccount } from '@/types'
+export function accountLogin(account: IAccount) {
   return hyRequest.post({
     url: '/login',
     data: account
