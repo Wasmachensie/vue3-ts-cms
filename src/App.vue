@@ -1,18 +1,14 @@
 <template>
-  <div>挨批评。vue</div>
-  <RouterView></RouterView>
+  <div class="app">
+    <RouterView></RouterView>
+  </div>
 </template>
 
-<script setup lang="ts">
-import hyRequest from './service'
+<script setup lang="ts"></script>
 
-hyRequest
-  .get({
-    url: '/home/multidata'
-  })
-  .then(res => {
-    console.log('app', res)
-  })
-</script>
-
-<style scoped></style>
+<style scoped>
+.app {
+  height: 100vh;
+  width: 100vw;
+}
+</style>

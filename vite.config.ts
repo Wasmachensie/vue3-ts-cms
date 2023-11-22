@@ -20,5 +20,11 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  css: {
+    preprocessorOptions: {
+      // 导入less预编译程序
+      less: {}
+    }
   }
 })
