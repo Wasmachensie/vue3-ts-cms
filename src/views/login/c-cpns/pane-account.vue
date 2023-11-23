@@ -25,14 +25,16 @@
 </template>
 
 <script setup lang="ts">
+import { LOGIN_NAME, LOGIN_PWD } from '@/global/constants'
 import useLoginStore from '@/store/login/login.ts'
+import { localCache } from '@/utils/cache'
 import { message } from '@/utils/resetMessage'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 // 1.定义account数据
 const accountForm = reactive({
-  account: '',
-  password: ''
+  account: localCache.getCache(LOGIN_NAME) ?? '',
+  password: localCache.getCache(LOGIN_PWD) ?? ''
 })
 
 // 2.校验规则
@@ -54,13 +56,24 @@ const accountRules: FormRules = reactive<FormRules>({
 // 3.执行帐号登录逻辑
 const ruleFormRef = ref<FormInstance>()
 const loginStore = useLoginStore()
-const loginAction = () => {
+const loginAction = (isRemPwd: boolean) => {
   ruleFormRef.value?.validate((valid: boolean, messageTips: any) => {
     if (valid) {
       console.log('检验成功')
       const name = accountForm.account
       const password = accountForm.password
-      loginStore.loginAccountAction({ name, password })
+      // 向服务器发送网络请求
+      loginStore.loginAccountAction({ name, password }).then(res => {
+        console.log('//', res)
+        // 判断是否需要记住密码
+        if (isRemPwd) {
+          localCache.setCache(LOGIN_NAME, name)
+          localCache.setCache(LOGIN_PWD, password)
+        } else {
+          localCache.deleteCache(LOGIN_NAME)
+          localCache.deleteCache(LOGIN_PWD)
+        }
+      })
     } else {
       let firstErrorField = Object.values(messageTips)[0][0].message
       message.error({

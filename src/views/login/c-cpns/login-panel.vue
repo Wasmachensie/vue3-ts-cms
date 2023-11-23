@@ -55,18 +55,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { LOGIN_REMPWD } from '@/global/constants'
+import { localCache } from '@/utils/cache'
+import { ref, watch } from 'vue'
 import PaneAccount from './pane-account.vue'
 import PanePhone from './pane-phone.vue'
-
 const activeName = ref<string>('phoneLogin') // el-tab-pane的值，设置默认值
-const isRemPwd = ref(false) // 记住密码
+const isRemPwd = ref<boolean>(localCache.getCache(LOGIN_REMPWD) ?? false) // 记住密码
+watch(isRemPwd, newValue => {
+  localCache.setCache(LOGIN_REMPWD, newValue)
+})
 const paneAccountRef = ref<InstanceType<typeof PaneAccount>>() // 获取子组件实例
 
 const handleLoginBtnClick = () => {
   if (activeName.value === 'accountLogin') {
     // 1.获取子组件实例,调用方法
-    paneAccountRef.value?.loginAction()
+    paneAccountRef.value?.loginAction(isRemPwd.value)
   } else {
     console.log('点击手机登录')
   }

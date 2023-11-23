@@ -10,7 +10,7 @@ const resetMessage: any = (options: any) => {
   messageInstance = ElMessage(options)
 }
 // message类型
-const typeArr: array<string> = ['success', 'error', 'warning', 'info']
+const typeArr: Array<string> = ['success', 'error', 'warning', 'info']
 typeArr.forEach((type: string) => {
   resetMessage[type] = (options: any) => {
     if (typeof options === 'string') {
