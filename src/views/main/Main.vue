@@ -8,8 +8,17 @@
 
 <script setup lang="ts">
 import { LOGIN_TOKEN } from '@/global/constants'
+import { req, reqCaptchaCode } from '@/service/main/main'
 import { localCache } from '@/utils/cache'
+import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
+//数据
+
+onBeforeMount(async () => {
+  let res = await reqCaptchaCode()
+  let resData = await req()
+  console.log('ppp', res, resData)
+})
 const router = useRouter()
 const handleLogout = () => {
   localCache.deleteCache(LOGIN_TOKEN)

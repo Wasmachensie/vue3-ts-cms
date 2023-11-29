@@ -80,7 +80,7 @@ const handleLoginBtnClick = () => {
 <style scoped lang="less">
 .login-panel {
   z-index: 9;
-  width: 30vw;
+  width: 25vw;
   padding: 20px 20px;
   border: 1px solid #ccc;
   border-radius: 20px;
@@ -90,7 +90,7 @@ const handleLoginBtnClick = () => {
     text-align: center;
   }
   .content {
-    height: 150px;
+    height: 200px;
     margin-top: 20px;
     .el-tabs--border-card {
       background-color: transparent;

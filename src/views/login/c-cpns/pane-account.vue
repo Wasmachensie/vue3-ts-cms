@@ -20,17 +20,35 @@
           show-password
         />
       </el-form-item>
+
+      <el-form-item label="验证码" prop="pass">
+        <el-input
+          type="text"
+          style="width: 12vw"
+          v-model="inputCode"
+          :maxlength="captchaLength"
+          autocomplete="off"
+        />
+        <div
+          @click="refreshCode()"
+          style="line-height: 0; margin-left: auto; cursor: pointer"
+        >
+          <!--验证码组件-->
+          <SecurityCode :identifyCode="identifyCode" />
+        </div>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { LOGIN_NAME, LOGIN_PWD } from '@/global/constants'
+import { CAPTCHA_LENGTH, LOGIN_NAME, LOGIN_PWD } from '@/global/constants'
 import useLoginStore from '@/store/login/login.ts'
 import { localCache } from '@/utils/cache'
 import { message } from '@/utils/resetMessage'
 import type { FormInstance, FormRules } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { onBeforeMount, reactive, ref } from 'vue'
+
 // 1.定义account数据
 const accountForm = reactive({
   account: localCache.getCache(LOGIN_NAME) ?? '',
@@ -84,6 +102,37 @@ const loginAction = (isRemPwd: boolean) => {
     }
   })
 }
+
+let identifyCode = ref('') //随机组合字符串
+let inputCode = ref('') //text框输入的验证码
+
+//随机切换验证码
+const makeCode = (length: number) => {
+  let code = ''
+  for (let i = 0; i < length; i++) {
+    const r = Math.floor(Math.random() * 36)
+    if (r < 10) {
+      code += r
+    } else {
+      code += String.fromCharCode(r - 10 + 65)
+    }
+  }
+  identifyCode.value = code
+  localCache.setCache('code', code)
+  console.log(identifyCode.value)
+}
+
+// 初始化验证码
+const refreshCode = () => {
+  inputCode.value = ''
+  identifyCode.value = '' //输入框置空
+  makeCode(CAPTCHA_LENGTH) //验证码长度为
+}
+
+const captchaLength = ref<number>(CAPTCHA_LENGTH) // 验证码输入框最大长度
+onBeforeMount(() => {
+  refreshCode()
+})
 // 把属性和方法暴露出去，可以用于父子组件通信，子组件把属性暴露出去，父组件用ref获取子组件DOM，子组件暴露的方法或属性可以用dom获取。
 defineExpose({
   loginAction
