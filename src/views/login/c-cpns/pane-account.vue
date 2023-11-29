@@ -4,7 +4,7 @@
       ref="ruleFormRef"
       :model="accountForm"
       :rules="accountRules"
-      label-width="60px"
+      label-width="80px"
       status-icon
     >
       <el-form-item label="帐号" prop="account">
@@ -75,32 +75,33 @@ const accountRules: FormRules = reactive<FormRules>({
 const ruleFormRef = ref<FormInstance>()
 const loginStore = useLoginStore()
 const loginAction = (isRemPwd: boolean) => {
-  ruleFormRef.value?.validate((valid: boolean, messageTips: any) => {
-    if (valid) {
-      console.log('检验成功')
-      const name = accountForm.account
-      const password = accountForm.password
-      // 向服务器发送网络请求
-      loginStore.loginAccountAction({ name, password }).then(res => {
-        console.log('//', res)
-        // 判断是否需要记住密码
-        if (isRemPwd) {
-          localCache.setCache(LOGIN_NAME, name)
-          localCache.setCache(LOGIN_PWD, password)
-        } else {
-          localCache.deleteCache(LOGIN_NAME)
-          localCache.deleteCache(LOGIN_PWD)
-        }
-      })
-    } else {
-      let firstErrorField = Object.values(messageTips)[0][0].message
-      message.error({
-        showClose: true,
-        message: firstErrorField
-      })
-      console.log(messageTips)
+  ruleFormRef.value?.validate(
+    (valid: boolean, messageTips: any | undefined) => {
+      if (valid) {
+        console.log('检验成功')
+        const name = accountForm.account
+        const password = accountForm.password
+        // 向服务器发送网络请求
+        loginStore.loginAccountAction({ name, password }).then(() => {
+          // 判断是否需要记住密码
+          if (isRemPwd) {
+            localCache.setCache(LOGIN_NAME, name)
+            localCache.setCache(LOGIN_PWD, password)
+          } else {
+            localCache.deleteCache(LOGIN_NAME)
+            localCache.deleteCache(LOGIN_PWD)
+          }
+        })
+      } else {
+        console.log('messageTips==>', messageTips)
+        let firstErrorField = Object.values(messageTips)[0][0].message
+        message.error({
+          showClose: true,
+          message: firstErrorField
+        })
+      }
     }
-  })
+  )
 }
 
 let identifyCode = ref('') //随机组合字符串
