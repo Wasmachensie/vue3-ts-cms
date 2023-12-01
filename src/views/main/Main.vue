@@ -1,12 +1,12 @@
 <template>
   <div class="main">
     <el-container class="main-content">
-      <el-aside class="main-aside">
-        <MainMenu></MainMenu>
+      <el-aside :width="isCollapse ? '60px' : '230px'">
+        <MainMenu :is-Fold="isCollapse"></MainMenu>
       </el-aside>
       <el-container>
         <el-header>
-          <MainHeader></MainHeader>
+          <MainHeader @fold-change="handleFoldChange"></MainHeader>
         </el-header>
         <el-main>
           <el-button type="primary" @click="handleLogout">退出登录</el-button>
@@ -22,7 +22,7 @@ import MainMenu from '@/components/main-menu/main-menu.vue'
 import { LOGIN_TOKEN } from '@/global/constants'
 import { req, reqCaptchaCode } from '@/service/main/main'
 import { localCache } from '@/utils/cache'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 //数据
@@ -37,6 +37,11 @@ const handleLogout = () => {
   // 跳回login页面
   router.push('/login')
 }
+// 处理折叠变化
+const isCollapse = ref(false)
+const handleFoldChange = (flag: boolean) => {
+  isCollapse.value = flag
+}
 </script>
 
 <style scoped lang="less">
@@ -47,7 +52,6 @@ const handleLogout = () => {
     height: 100%;
     width: 100%;
     .el-aside {
-      width: 15vw;
       overflow-x: hidden;
       overflow-y: auto;
       line-height: 200px;
@@ -56,13 +60,13 @@ const handleLogout = () => {
       background-color: #001529;
       scrollbar-width: none; /* firefox */
       -ms-overflow-style: none; /* IE 10+ */
-      transition: width 0.3s ease;
+      transition: width 0.3s ease; // 宽度变化时动画
       &::-webkit-scrollbar {
         display: none;
       }
     }
     .el-header {
-      background-color: antiquewhite;
+      height: 50px;
     }
     .el-main {
       background-color: #f0f2f5;

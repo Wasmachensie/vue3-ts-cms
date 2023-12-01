@@ -3,12 +3,13 @@
     <!-- ************************1 logo部分************************ -->
     <div class="logo">
       <img src="@/assets/img/logo_icon.png" />
-      <h2 class="title">VUE-TS-CRM管理系统</h2>
+      <div class="title" v-show="!isFold">VUE-TS-CRM管理系统</div>
     </div>
     <!-- ************************2 菜单部分************************ -->
     <div class="menu">
-      <!-- 核心技术这个item id是39,所以打开就是选中 id为39这个item -->
+      <!-- 核心技术这个item id是39,所以打开就是选中 id为39这个item  -->
       <el-menu
+        :collapse="isFold"
         default-active="39"
         text-color="#b7bdc3"
         active-text-color="#fff"
@@ -50,6 +51,14 @@ const { userMenus } = storeToRefs(useLoginStore())
 // const loginStore = useLoginStore()  // 这样也可以拿到
 // const userMenus = loginStore.userMenus
 
+// 接受父组件的传值
+defineProps({
+  isFold: {
+    type: Boolean,
+    default: false
+  }
+})
+
 // 假设 Item 和 SubItem 是你数据中的菜单项和子菜单项的类型
 interface Item {
   id: number
@@ -84,8 +93,8 @@ const getIconClass = (iconName: string) => {
     .title {
       display: flex;
       align-items: center;
-      font-size: 18px;
-      margin-left: 1vw;
+      font-size: 16px;
+      padding: 0 10px;
       color: white;
       white-space: nowrap;
     }
