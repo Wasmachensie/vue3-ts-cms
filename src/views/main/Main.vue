@@ -9,7 +9,7 @@
           <MainHeader @fold-change="handleFoldChange"></MainHeader>
         </el-header>
         <el-main>
-          <el-button type="primary" @click="handleLogout">退出登录</el-button>
+          <RouterView />
         </el-main>
       </el-container>
     </el-container>
@@ -19,11 +19,8 @@
 <script setup lang="ts">
 import MainHeader from '@/components/main-header/main-header.vue'
 import MainMenu from '@/components/main-menu/main-menu.vue'
-import { LOGIN_TOKEN } from '@/global/constants'
 import { req, reqCaptchaCode } from '@/service/main/main'
-import { localCache } from '@/utils/cache'
 import { onBeforeMount, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 //数据
 onBeforeMount(async () => {
@@ -31,12 +28,7 @@ onBeforeMount(async () => {
   let resData = await req()
   console.log('ppp', res, resData)
 })
-const router = useRouter()
-const handleLogout = () => {
-  localCache.deleteCache(LOGIN_TOKEN)
-  // 跳回login页面
-  router.push('/login')
-}
+
 // 处理折叠变化
 const isCollapse = ref(false)
 const handleFoldChange = (flag: boolean) => {

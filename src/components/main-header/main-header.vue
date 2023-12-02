@@ -7,13 +7,14 @@
     </div>
     <div class="content">
       <div class="breadcrumb">面包屑</div>
-      <div class="info">111</div>
+      <HeaderInfo />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import HeaderInfo from './c-cpns/header-info.vue'
 const emit = defineEmits(['foldChange']) // 自定义事件
 const isFold = ref(false) // 记录折叠状态
 const handleMenuIconClick = () => {
@@ -38,6 +39,7 @@ const handleMenuIconClick = () => {
   .content {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex: 1;
     padding: 0 18px;
   }
