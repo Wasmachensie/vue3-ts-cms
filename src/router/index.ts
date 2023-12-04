@@ -15,13 +15,8 @@ const router = createRouter({
     },
     {
       path: '/main',
+      name: 'main',
       component: () => import('../views/main/main.vue')
-      // children: [
-      //   {
-      //     path: '/login',
-      //     component: () => import('../views/')
-      //   }
-      // ]
     },
     {
       path: '/:pathMatch(.*)',
@@ -29,6 +24,35 @@ const router = createRouter({
     }
   ]
 })
+
+const localRoutes = [
+  {
+    path: '/main/analysis/overview',
+    component: () => import('../views/main/analysis/overview/overview.vue')
+  },
+  {
+    path: '/main/analysis/dashboard',
+    component: () => import('../views/main/analysis/dashboard/dashboard.vue')
+  },
+  {
+    path: '/main/system/role',
+    component: () => import('../views/main/system/role/role.vue')
+  },
+  {
+    path: '/main/system/menu',
+    component: () => import('../views/main/system/menu/menu.vue')
+  },
+  {
+    path: '/main/system/user',
+    component: () => import('../views/main/system/user/user.vue')
+  },
+  {
+    path: '/main/analysis/dashboard',
+    component: () => import('../views/main/analysis/dashboard/dashboard.vue')
+  }
+]
+router.addRoute('main')
+
 // 导航守卫
 router.beforeEach(to => {
   const token = localCache.getCache(LOGIN_TOKEN)

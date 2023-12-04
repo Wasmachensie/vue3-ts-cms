@@ -25,9 +25,12 @@
               <span>{{ item.name }}</span>
             </template>
             <template v-for="subItem in item.children" :key="subItem.id">
-              <el-menu-item :index="subItem.id + ''">{{
-                subItem.name
-              }}</el-menu-item>
+              <el-menu-item
+                :index="subItem.id + ''"
+                @click="handleItemClick(subItem)"
+              >
+                {{ subItem.name }}11
+              </el-menu-item>
             </template>
           </el-sub-menu>
 
@@ -47,7 +50,9 @@
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 const { userMenus } = storeToRefs(useLoginStore())
+
 // const loginStore = useLoginStore()  // 这样也可以拿到
 // const userMenus = loginStore.userMenus
 
@@ -69,6 +74,7 @@ interface Item {
 interface SubItem {
   id: number
   name: string
+  url: string
 }
 // 判断菜单是否有下一级别
 const hasChildren = (item: Item) => {
@@ -77,6 +83,12 @@ const hasChildren = (item: Item) => {
 
 const getIconClass = (iconName: string) => {
   return iconName.split('el-icon-')[1]
+}
+
+const router = useRouter()
+const handleItemClick = (item: SubItem) => {
+  console.log('item点击==》', item.url)
+  router.push(item.url)
 }
 </script>
 
