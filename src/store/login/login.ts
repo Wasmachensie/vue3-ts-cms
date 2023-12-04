@@ -7,9 +7,9 @@ import {
 } from '@/service/login/login'
 import type { IAccount } from '@/types'
 import { localCache } from '@/utils/cache'
+import { mapMenuToRoute } from '@/utils/mapMenus'
 import { message } from '@/utils/resetMessage'
 import { defineStore } from 'pinia'
-import { RouteRecordRaw } from 'vue-router'
 
 // state类型
 interface ILoginState {
@@ -58,31 +58,9 @@ const useLoginStore = defineStore('login', {
         localCache.setCache('userInfo', this.userInfo)
         localCache.setCache('userMenus', userMenus)
 
-        // *重要步骤：动态添加路由   动态获取所有路由对象，放到数组中
-        const localRoutes: RouteRecordRaw[] = []
-        // *1 读取router/mian所有ts文件,webpack用require.context(),读取目标文件下所有ts文件
-        // https://www.jianshu.com/p/e7ab6f5e3fa1 关于eager:匹配到的文件默认是懒加载的，所有用eager: true可以消除
-        const routeFiles: Record<string, any> = import.meta.glob(
-          '../../router/main/**/*.ts',
-          {
-            eager: true
-          }
-        )
-        console.log('routeFiles==>', routeFiles)
-        for (const file in routeFiles) {
-          const module = routeFiles[file]
-          localRoutes.push(module.default)
-          console.log('module==>', module.default)
-        }
-        // *2 根据菜单去匹配正确路由
-        for (const menu of userMenus) {
-          // 先对1级路由进行遍历
-          for (const subMenu of menu.children) {
-            const route = localRoutes.find(item => item.path === subMenu.url)
-            if (route) router.addRoute('main', route)
-          }
-        }
-
+        // 重要动态添加路由，方法已抽离
+        const routes = mapMenuToRoute(userMenus)
+        routes.forEach(route => router.addRoute('main', route))
         // 3.页面跳转(mian.vue)
         router.push('/main')
       } else {

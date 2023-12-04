@@ -18,7 +18,7 @@
       <el-dropdown>
         <div class="userInfo">
           <el-avatar :size="30" src="src\assets\img\logo_icon.png" />
-          <span class="userName">userName</span>
+          <span class="userName">{{ userName }}</span>
         </div>
 
         <template #dropdown>
@@ -43,9 +43,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { LOGIN_NAME, LOGIN_TOKEN } from '@/global/constants'
 import { localCache } from '@/utils/cache.ts'
-import { LOGIN_TOKEN } from '@/global/constants'
+import { onBeforeMount, ref } from 'vue'
+import { useRouter } from 'vue-router'
+const userName = ref()
+onBeforeMount(() => {
+  userName.value = localCache.getCache(LOGIN_NAME)
+})
 
 const router = useRouter()
 const handleLogout = () => {
