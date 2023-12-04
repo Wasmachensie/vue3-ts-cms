@@ -1,3 +1,4 @@
+import { firstMenu } from '@/utils/mapMenus'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LOGIN_TOKEN } from '../global/constants'
 import { localCache } from '../utils/cache'
@@ -60,6 +61,10 @@ router.beforeEach(to => {
     // 这里写是因为这个项目中所有的url都是main开头的，其他的项目根据实际情况写判断
     // 只有登录成功才能跳转
     return '/login'
+  }
+  // 如果进入到main中
+  if (to.path === '/main') {
+    return firstMenu?.url
   }
 })
 export default router
