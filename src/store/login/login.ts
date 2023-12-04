@@ -23,12 +23,16 @@ interface ILoginState {
   userMenus: any
 }
 
+// token: localCache.getCache(LOGIN_TOKEN) ?? '', // 没有的话就设为空字符串,??是非空断言
+// userInfo: localCache.getCache('userInfo') ?? {},
+// userMenus: localCache.getCache('userMenus') ?? []
+
 // defineStore<string,……>可以这样指定state类型
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
-    token: localCache.getCache(LOGIN_TOKEN) ?? '', // 没有的话就设为空字符串,??是非空断言
-    userInfo: localCache.getCache('userInfo') ?? {},
-    userMenus: localCache.getCache('userMenus') ?? []
+    token: '',
+    userInfo: {},
+    userMenus: []
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -65,6 +69,22 @@ const useLoginStore = defineStore('login', {
         router.push('/main')
       } else {
         message.error(loginResult.response.data)
+      }
+    },
+    loadLocalCacheAction() {
+      // 用户进行刷新时，默认进行数据加载操作
+      const token = localCache.getCache(LOGIN_TOKEN)
+      const userInfo = localCache.getCache('userInfo')
+      const userMenus = localCache.getCache('userMenus')
+      if (token && userInfo && userMenus) {
+        // 说明用户是登录状态的
+        this.token = token
+        this.userInfo = userInfo
+        this.userMenus = userMenus
+
+        // 动态添加路由
+        const routes = mapMenuToRoute(userMenus)
+        routes.forEach(route => router.addRoute('main', route))
       }
     }
   }
