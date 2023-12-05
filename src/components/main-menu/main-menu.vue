@@ -7,10 +7,10 @@
     </div>
     <!-- ************************2 菜单部分************************ -->
     <div class="menu">
-      <!-- 核心技术这个item id是39,所以打开就是选中 id为39这个item  -->
+      <!-- 核心技术这个item id是39,所以打开就是选中 id为39这个item  default-active="39"-->
       <el-menu
         :collapse="isFold"
-        default-active="39"
+        :default-active="defaultValue"
         text-color="#b7bdc3"
         active-text-color="#fff"
         background-color="#001529"
@@ -49,12 +49,15 @@
 
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
-const { userMenus } = storeToRefs(useLoginStore())
+// import { storeToRefs } from 'pinia'
+import { mapPathToMenu } from '@/utils/mapMenus'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+// const { userMenus } = storeToRefs(useLoginStore()) // 这样也可以拿到
 
-// const loginStore = useLoginStore()  // 这样也可以拿到
-// const userMenus = loginStore.userMenus
+// 1.获取菜单数据
+const loginStore = useLoginStore()
+const userMenus = loginStore.userMenus
 
 // 接受父组件的传值
 defineProps({
@@ -90,6 +93,10 @@ const handleItemClick = (item: SubItem) => {
   console.log('item点击==》', item.url)
   router.push(item.url)
 }
+const route = useRoute()
+const currentMenu = mapPathToMenu(route.path, userMenus)
+console.log('main-menu-route===>', currentMenu.id)
+const defaultValue = ref<string>(currentMenu.id + '') // 解决刷新后所在页面与路径不匹配问题
 </script>
 
 <style scoped lang="less">

@@ -26,6 +26,15 @@ function loadLocalRoute() {
 }
 
 export let firstMenu: any = null // 设置为全局变量
+/**
+ * 对menu进行映射 映射成路由
+ * @param userMenus 菜单数组
+ * @returns 路由
+ * @example[children:[
+ * 0:{id: 39, url: "/main/analysis/overview", name: "核心技术"}
+ * 1:{id: 40, url: "/main/analysis/dashboard", name: "商品统计"}]]
+ * 返回[{"path": "/main/analysis/overview"},{"path": "/main/analysis/dashboard"}]
+ */
 export function mapMenuToRoute(userMenus: any[]) {
   // 加载本地路由
   const localRoutes = loadLocalRoute()
@@ -42,4 +51,20 @@ export function mapMenuToRoute(userMenus: any[]) {
     }
   }
   return routes
+}
+
+/**
+ * 根据路径去匹配所有需要显示的菜单
+ * @param path 需要匹配的url路径
+ * @param userMenus 该用户的所有菜单
+ */
+export function mapPathToMenu(path: string, userMenus: any[]) {
+  for (const menu of userMenus) {
+    for (const subMenu of menu.children) {
+      if (subMenu.url === path) {
+        return subMenu
+      }
+    }
+  }
+  return undefined
 }
