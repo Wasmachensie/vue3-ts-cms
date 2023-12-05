@@ -45,7 +45,16 @@ export function mapMenuToRoute(userMenus: any[]) {
     // 先对1级路由进行遍历
     for (const subMenu of menu.children) {
       const route = localRoutes.find(item => item.path === subMenu.url)
-      if (route) routes.push(route)
+      if (route) {
+        // 这行代码为了解决面包屑点击一级菜单也生效的问题，但是用户不一定有menu.children[0]的这个权限
+        // routes.push({ path: menu.url, redirect: menu.children[0].url })
+        // 优化：给route的定级菜单增加重定向功能(但是只需要添加一次即可)
+        if (!routes.find(item => item.path === menu.url)) {
+          routes.push({ path: menu.url, redirect: route.path })
+        }
+        // 二级菜单的路由加到routes里面
+        routes.push(route)
+      }
       // 记录第一个匹配到的菜单(在route有值的情况下),第二次进来时就不用赋值了
       if (!firstMenu && route) firstMenu = subMenu
     }
@@ -54,9 +63,10 @@ export function mapMenuToRoute(userMenus: any[]) {
 }
 
 /**
- * 根据路径去匹配所有需要显示的菜单
- * @param path 需要匹配的url路径
+ * 根据给定的路径和用户菜单查找匹配的子菜单项
+ * @param path 需要匹配的url路径(当前页面的路径)
  * @param userMenus 该用户的所有菜单
+ * @returns 匹配的子菜单项，如果未找到匹配则返回 undefined
  */
 export function mapPathToMenu(path: string, userMenus: any[]) {
   for (const menu of userMenus) {
@@ -67,4 +77,33 @@ export function mapPathToMenu(path: string, userMenus: any[]) {
     }
   }
   return undefined
+}
+
+interface IbreadCrumbs {
+  name: string
+  path: string
+}
+/**
+ * 菜单和给定的路径，生成面包屑导航
+ * @param path 当前页面的路径
+ * @param userMenus  包含用户菜单信息的数组
+ * @returns 包含面包屑信息的数组
+ */
+export function mapPathToBreadCrumbs(path: string, userMenus: any[]) {
+  // 1.定义面包屑
+  const breadCrumbs: IbreadCrumbs[] = []
+  // 2.两层遍历获取面包屑层级
+  for (const menu of userMenus) {
+    for (const submenu of menu.children) {
+      if (path === submenu.url) {
+        // 如果找到匹配的路径，将主菜单和子菜单添加到面包屑数组中
+        // 顶层菜单,path: menu.url可以不传
+        breadCrumbs.push({ name: menu.name, path: menu.url })
+        // 匹配菜单
+        breadCrumbs.push({ name: submenu.name, path: submenu.url })
+      }
+    }
+  }
+  // 3.返回生成的面包屑数组
+  return breadCrumbs
 }

@@ -29,7 +29,7 @@
                 :index="subItem.id + ''"
                 @click="handleItemClick(subItem)"
               >
-                {{ subItem.name }}11
+                {{ subItem.name }}
               </el-menu-item>
             </template>
           </el-sub-menu>
@@ -51,7 +51,7 @@
 import useLoginStore from '@/store/login/login'
 // import { storeToRefs } from 'pinia'
 import { mapPathToMenu } from '@/utils/mapMenus'
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 // const { userMenus } = storeToRefs(useLoginStore()) // 这样也可以拿到
 
@@ -94,9 +94,12 @@ const handleItemClick = (item: SubItem) => {
   router.push(item.url)
 }
 const route = useRoute()
-const currentMenu = mapPathToMenu(route.path, userMenus)
-console.log('main-menu-route===>', currentMenu.id)
-const defaultValue = ref<string>(currentMenu.id + '') // 解决刷新后所在页面与路径不匹配问题
+
+// const defaultValue = ref<string>(currentMenu.id + '') // 解决刷新后所在页面与路径不匹配问题
+const defaultValue = computed(() => {
+  const currentMenu = mapPathToMenu(route.path, userMenus)
+  return currentMenu.id + ''
+})
 </script>
 
 <style scoped lang="less">
